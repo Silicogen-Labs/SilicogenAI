@@ -3,6 +3,13 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Terminal } from "lucide-react";
 
 const HeroSection = () => {
+  const handleScrollToWaitlist = () => {
+    const waitlistSection = document.getElementById("waitlist");
+    if (!waitlistSection) return;
+
+    waitlistSection.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
     <section className="relative flex min-h-[90vh] items-center justify-center px-6 pt-28">
       {/* Background gradient orbs */}
@@ -66,7 +73,10 @@ const HeroSection = () => {
           transition={{ duration: 0.6, delay: 0.75 }}
           className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
         >
-          <Button className="h-12 rounded-full px-8 text-[13px] font-bold uppercase tracking-wider shadow-[0_8px_24px_hsl(var(--accent)/0.15)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_32px_hsl(var(--accent)/0.25)]">
+          <Button
+            onClick={handleScrollToWaitlist}
+            className="h-12 rounded-full px-8 text-[13px] font-bold uppercase tracking-wider shadow-[0_8px_24px_hsl(var(--accent)/0.15)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_32px_hsl(var(--accent)/0.25)]"
+          >
             Join the Waitlist
             <ArrowRight className="ml-1 h-4 w-4" />
           </Button>
