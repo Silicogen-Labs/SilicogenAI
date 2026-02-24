@@ -1,0 +1,200 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 98%;
+    --foreground: 0 0% 8%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 8%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 8%;
+
+    --primary: 0 0% 8%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 0 0% 94%;
+    --secondary-foreground: 0 0% 8%;
+
+    --muted: 0 0% 92%;
+    --muted-foreground: 0 0% 40%;
+
+    --accent: 153 80% 38%;
+    --accent-foreground: 0 0% 100%;
+
+    --accent-secondary: 193 80% 40%;
+    --accent-secondary-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 88%;
+    --border-medium: 0 0% 80%;
+    --input: 0 0% 88%;
+    --ring: 153 80% 38%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 0 0% 8%;
+    --sidebar-primary: 153 80% 38%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 94%;
+    --sidebar-accent-foreground: 0 0% 8%;
+    --sidebar-border: 0 0% 88%;
+    --sidebar-ring: 153 80% 38%;
+
+    --surface-elevated: 0 0% 100%;
+  }
+
+  .dark {
+    --background: 0 0% 4%;
+    --foreground: 0 0% 100%;
+
+    --card: 0 0% 7%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 0 0% 7%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 4%;
+
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 0 0% 14%;
+    --muted-foreground: 0 0% 64%;
+
+    --accent: 153 100% 50%;
+    --accent-foreground: 0 0% 0%;
+
+    --accent-secondary: 193 100% 50%;
+    --accent-secondary-foreground: 0 0% 0%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 15%;
+    --border-medium: 0 0% 22%;
+    --input: 0 0% 15%;
+    --ring: 153 100% 50%;
+
+    --sidebar-background: 0 0% 4%;
+    --sidebar-foreground: 0 0% 96%;
+    --sidebar-primary: 153 100% 50%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 10%;
+    --sidebar-accent-foreground: 0 0% 96%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 153 100% 50%;
+
+    --surface-elevated: 0 0% 10%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+  scrollbar-color: hsl(var(--accent) / 0.3) transparent;
+  scrollbar-width: thin;
+}
+
+/* Webkit scrollbar — themed, desktop only */
+@media (min-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--accent) / 0.2);
+    border-radius: 99px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--accent) / 0.4);
+  }
+
+  /* Light mode — softer thumb */
+  :root:not(.dark) ::-webkit-scrollbar-thumb {
+    background: hsl(var(--accent) / 0.15);
+  }
+  :root:not(.dark) ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--accent) / 0.3);
+  }
+}
+
+/* Mobile — use native overlay scrollbars */
+@media (max-width: 767px) {
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  html {
+    scrollbar-width: none;
+  }
+}
+
+/* Logo carousel animation */
+@keyframes scroll-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-scroll-left {
+  animation: scroll-left 25s linear infinite;
+}
+
+/* Glow effects — adaptive to theme */
+.glow-accent {
+  box-shadow: 0 0 40px hsl(var(--accent) / 0.06), 0 0 80px hsl(var(--accent) / 0.03);
+}
+
+.dark .glow-accent {
+  box-shadow: 0 0 40px hsl(var(--accent) / 0.08), 0 0 80px hsl(var(--accent) / 0.04);
+}
+
+.glow-accent-strong {
+  box-shadow: 0 0 24px hsl(var(--accent) / 0.1), 0 0 60px hsl(var(--accent) / 0.04);
+}
+
+.dark .glow-accent-strong {
+  box-shadow: 0 0 24px hsl(var(--accent) / 0.15), 0 0 60px hsl(var(--accent) / 0.06);
+}
+
+/* Hide scrollbar utility */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
