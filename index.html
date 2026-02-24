@@ -24,10 +24,14 @@
   <body>
     <form
       name="waitlist"
+      method="POST"
+      action="/"
+      netlify
       data-netlify="true"
       netlify-honeypot="bot-field"
       hidden
     >
+      <input type="hidden" name="form-name" value="waitlist" />
       <input type="text" name="bot-field" />
       <input type="email" name="email" />
       <input type="hidden" name="subject" value="New waitlist signup (%{siteName})" />

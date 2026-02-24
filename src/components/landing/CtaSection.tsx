@@ -65,10 +65,15 @@ const CtaSection = () => {
 
         <form
           name="waitlist"
+          method="POST"
+          action="/"
+          netlify-honeypot="bot-field"
+          data-netlify="true"
           onSubmit={handleSubmit}
           className="mx-auto mt-10 flex w-full max-w-lg flex-col items-center gap-3 sm:flex-row"
         >
           <input type="hidden" name="form-name" value="waitlist" />
+          <input type="hidden" name="bot-field" />
           <input type="hidden" name="subject" value="New waitlist signup (%{siteName})" />
 
           <div className="relative w-full flex-1">
