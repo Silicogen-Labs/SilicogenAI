@@ -9,6 +9,7 @@ const links = [
   { label: "Docs", to: "/docs" },
   { label: "Blog", to: "/blog" },
   { label: "About", to: "/about" },
+  { label: "Book Demo", to: "/book-demo" },
 ];
 
 const SubNavbar = () => {

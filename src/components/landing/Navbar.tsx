@@ -76,7 +76,10 @@ const Navbar = () => {
         {/* Right side */}
         <div className="hidden items-center gap-3 md:flex">
           <ThemeToggle />
-          <Button className="h-10 rounded-full px-7 text-[12px] font-bold uppercase tracking-wider transition-all duration-200 hover:shadow-[0_8px_24px_hsl(var(--accent)/0.15)]">
+          <Button
+            onClick={() => navigate("/book-demo")}
+            className="h-10 rounded-full px-7 text-[12px] font-bold uppercase tracking-wider transition-all duration-200 hover:shadow-[0_8px_24px_hsl(var(--accent)/0.15)]"
+          >
             Book a Demo
           </Button>
         </div>
@@ -106,7 +109,13 @@ const Navbar = () => {
             <NavPageLinkMobile label="Blog" to="/blog" />
             <NavPageLinkMobile label="About" to="/about" />
             <div className="mt-2 flex flex-col gap-3 border-t border-border pt-4">
-              <Button className="w-full rounded-full text-xs font-bold uppercase tracking-wider">
+              <Button
+                onClick={() => {
+                  setMobileOpen(false);
+                  navigate("/book-demo");
+                }}
+                className="w-full rounded-full text-xs font-bold uppercase tracking-wider"
+              >
                 Book a Demo
               </Button>
             </div>
