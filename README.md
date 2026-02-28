@@ -2,7 +2,7 @@
 
 **Live site:** [silicogenai.netlify.app](https://silicogenai.netlify.app)
 
-AI-assisted hardware engineering platform — helping teams design, verify, and ship silicon faster.
+Landing page for AI-assisted hardware engineering coding agent — helping teams design, verify, and ship silicon faster.
 
 ## Stack
 
