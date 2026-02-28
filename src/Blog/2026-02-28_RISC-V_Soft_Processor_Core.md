@@ -603,16 +603,23 @@ This project stands on the shoulders of giants:
 The entire project is open source. To boot OpenSBI:
 
 ```bash
-cd /silicogenplayground/bootble-vm-riscv
-make all          # builds OpenSBI + DTB + boot image + simulator
-./build/verilator/Vtb_soc
+git clone https://github.com/Silicogen-Labs/silicogen-proj-bootable-riscv-opensbi.git
+cd silicogen-proj-bootable-riscv-opensbi
+make all
+./scripts/boot_opensbi.sh
 ```
 
-You'll see the full OpenSBI v1.8.1 banner print to the console. From there, you can:
-- Look at waveforms in GTKWave to see internal signals cycle-by-cycle
-- Run the unit test suite: `make sw && make sim`
+`boot_opensbi.sh` suppresses the Verilator testbench noise and prints only the clean UART console output — the full OpenSBI v1.8.1 banner. You can also read it directly:
+
+```bash
+cat /tmp/uart_output.txt
+```
+
+From there you can:
+- Inspect waveforms cycle-by-cycle: `gtkwave sim/waveforms/tb_soc.vcd`
+- Run the full unit test suite: `cd sw/scripts && ./run_all_tests.sh`
 - Add new features: S-mode, virtual memory, a second HART
-- Synthesize to an FPGA
+- Synthesize the RTL to an FPGA (all modules are synthesis-clean SystemVerilog)
 
 ---
 
