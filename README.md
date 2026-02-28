@@ -1,73 +1,48 @@
-# Welcome to your Lovable project
+# SilicogenAI
 
-## Project info
+**Live site:** [silicogenai.netlify.app](https://silicogenai.netlify.app)
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+AI-assisted hardware engineering platform — helping teams design, verify, and ship silicon faster.
 
-## How can I edit this code?
+## Stack
 
-There are several ways of editing your application.
+- **React** + **TypeScript** + **Vite**
+- **Tailwind CSS** + **shadcn/ui**
+- **Framer Motion** for animations
+- **react-markdown** + **remark-gfm** + **react-syntax-highlighter** for the blog
+- Deployed on **Netlify** (auto-deploy on push to `main`)
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+## Development
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+npm install
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## Blog
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Posts live in `src/Blog/` as Markdown files. Name them `YYYY-MM-DD_Post_Title.md` — the date and URL slug are parsed from the filename automatically.
 
-**Use GitHub Codespaces**
+**Frontmatter:**
+```yaml
+---
+title: "Your Post Title"
+description: "Short description shown on the blog index card."
+author: "SilicogenAI Team"
+tags: ["RISC-V", "RTL", "Hardware"]
+---
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+**Publishing:** push to `main` → Netlify builds → live at `/blog/your-post-title`.
 
-## What technologies are used for this project?
+**YouTube embeds:** paste a bare YouTube URL on its own line in the markdown — it renders as an embedded player automatically. The first YouTube link in a post is also used as the card thumbnail on the blog index.
 
-This project is built with:
+**Custom thumbnail:** add `image: "https://..."` to frontmatter to override the auto-thumbnail.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Deployment
 
-## How can I deploy this project?
+Netlify auto-deploys from the `main` branch. SPA routing is handled via `netlify.toml`.
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+```sh
+npm run build   # production build → dist/
+```

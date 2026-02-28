@@ -1,167 +1,187 @@
-import { PenLine, Sparkles, Zap, Layers } from "lucide-react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import SilicogenLogo from "@/components/SilicogenLogo";
-import SubNavbar from "@/components/landing/SubNavbar";
 import { motion } from "framer-motion";
+import SubNavbar from "@/components/landing/SubNavbar";
+import SilicogenLogo from "@/components/SilicogenLogo";
+import { getAllPosts, formatDate, type BlogPost } from "@/lib/blog";
 
-const topics = [
-  { label: "AI & RTL", color: "accent" },
-  { label: "Deep Dives", color: "accent-secondary" },
-  { label: "Product", color: "accent" },
-  { label: "Research", color: "accent-secondary" },
+// Fallback gradient covers (cycle by post index)
+const COVER_GRADIENTS = [
+  "from-[hsl(var(--accent)/0.25)] via-[hsl(var(--accent-secondary)/0.12)] to-transparent",
+  "from-[hsl(var(--accent-secondary)/0.25)] via-[hsl(var(--accent)/0.10)] to-transparent",
+  "from-indigo-900/40 via-[hsl(var(--accent)/0.08)] to-transparent",
+  "from-cyan-900/30 via-[hsl(var(--accent-secondary)/0.10)] to-transparent",
 ];
 
-const floatingIcons = [
-  { Icon: PenLine, x: "8%", y: "25%", delay: 0, size: 20 },
-  { Icon: Sparkles, x: "88%", y: "18%", delay: 0.6, size: 22 },
-  { Icon: Zap, x: "80%", y: "72%", delay: 1.2, size: 18 },
-  { Icon: Layers, x: "12%", y: "68%", delay: 0.9, size: 20 },
-];
+// ─── Card Cover ───────────────────────────────────────────────────────────────
+function CardCover({ post, idx }: { post: BlogPost; idx: number }) {
+  if (post.thumbnail) {
+    return (
+      <div className="relative w-full overflow-hidden" style={{ aspectRatio: "16/9" }}>
+        <img
+          src={post.thumbnail}
+          alt={post.title}
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          loading="lazy"
+        />
+        {/* Subtle dark scrim so text below doesn't fight the image */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/5 to-black/30" />
+      </div>
+    );
+  }
 
-const Blog = () => {
+  // Fallback: branded gradient placeholder
+  return (
+    <div
+      className={`relative w-full bg-gradient-to-br ${COVER_GRADIENTS[idx % COVER_GRADIENTS.length]} bg-card`}
+      style={{ aspectRatio: "16/9" }}
+    >
+      {/* Subtle grid lines */}
+      <div
+        className="absolute inset-0 opacity-20"
+        style={{
+          backgroundImage:
+            "linear-gradient(hsl(var(--border)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--border)) 1px, transparent 1px)",
+          backgroundSize: "32px 32px",
+        }}
+      />
+      {/* Centre mark */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="h-px w-8 bg-[hsl(var(--accent-secondary)/0.4)]" />
+      </div>
+    </div>
+  );
+}
+
+// ─── Post Card (portrait) ─────────────────────────────────────────────────────
+function PostCard({ post, idx }: { post: BlogPost; idx: number }) {
   const navigate = useNavigate();
 
   return (
-    <div className="relative flex min-h-screen flex-col overflow-hidden bg-background text-foreground">
-      {/* Dramatic background */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/4 top-1/3 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[hsl(var(--accent-secondary)/0.04)] blur-[150px] dark:bg-[hsl(var(--accent-secondary)/0.03)]" />
-        <div className="absolute right-1/4 bottom-1/3 h-[400px] w-[400px] rounded-full bg-accent/[0.03] blur-[120px] dark:bg-accent/[0.02]" />
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[hsl(var(--accent-secondary)/0.3)] to-transparent dark:via-[hsl(var(--accent-secondary)/0.2)]" />
-        {/* Diagonal lines */}
-        <div
-          className="absolute inset-0 opacity-[0.03] dark:opacity-[0.02]"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(45deg, hsl(var(--accent-secondary)) 0, hsl(var(--accent-secondary)) 1px, transparent 1px, transparent 60px)",
-          }}
-        />
-      </div>
-
-      {/* Floating icons */}
-      {floatingIcons.map(({ Icon, x, y, delay, size }, i) => (
-        <motion.div
-          key={i}
-          className="pointer-events-none absolute text-[hsl(var(--accent-secondary)/0.1)]"
-          style={{ left: x, top: y }}
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.5 + delay, duration: 0.8, type: "spring" }}
-        >
-          <motion.div
-            animate={{ y: [0, -10, 0], rotate: [0, 5, -5, 0] }}
-            transition={{ duration: 5 + i, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <Icon size={size} />
-          </motion.div>
-        </motion.div>
-      ))}
-
-      <SubNavbar />
+    <motion.article
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.06 * idx, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      onClick={() => navigate(`/blog/${post.slug}`)}
+      className="group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-border/50 bg-card transition-all duration-300 hover:-translate-y-1 hover:border-[hsl(var(--accent-secondary)/0.35)] hover:shadow-[0_8px_40px_-8px_hsl(var(--accent-secondary)/0.15)]"
+    >
+      {/* Cover image */}
+      <CardCover post={post} idx={idx} />
 
       {/* Content */}
-      <main className="relative z-10 flex flex-1 items-center justify-center px-6 pt-20">
-        <div className="mx-auto max-w-2xl text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-          >
-            <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-[hsl(var(--accent-secondary)/0.2)] bg-[hsl(var(--accent-secondary)/0.05)] px-5 py-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[hsl(var(--accent-secondary))]">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--accent-secondary))] opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-[hsl(var(--accent-secondary))]" />
+      <div className="flex flex-1 flex-col gap-3 p-5">
+        {/* Tags */}
+        {post.tags.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {post.tags.slice(0, 3).map((tag) => (
+              <span
+                key={tag}
+                className="text-[10px] font-semibold uppercase tracking-widest text-[hsl(var(--accent-secondary)/0.7)]"
+              >
+                {tag}
               </span>
-              Launching Soon
-            </div>
-          </motion.div>
+            ))}
+          </div>
+        )}
 
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15, duration: 0.7 }}
-            className="mb-6 text-5xl font-black tracking-tight sm:text-7xl"
-          >
-            <span className="bg-gradient-to-b from-foreground to-muted-foreground bg-clip-text text-transparent">
-              Blog
-            </span>
-          </motion.h1>
+        {/* Title */}
+        <h2 className="text-base font-bold leading-snug tracking-tight text-foreground transition-colors duration-200 group-hover:text-[hsl(var(--accent-secondary))] sm:text-lg">
+          {post.title}
+        </h2>
 
+        {/* Description */}
+        {post.description && (
+          <p className="line-clamp-2 flex-1 text-sm leading-relaxed text-muted-foreground/60">
+            {post.description}
+          </p>
+        )}
+
+        {/* Meta footer */}
+        <div className="mt-auto flex items-center gap-3 pt-2 text-xs text-muted-foreground/35 border-t border-border/30">
+          {post.date && <span>{formatDate(post.date)}</span>}
+          <span className="ml-auto">{post.readTime} min read</span>
+        </div>
+      </div>
+    </motion.article>
+  );
+}
+
+// ─── Blog Index Page ──────────────────────────────────────────────────────────
+const Blog = () => {
+  const posts = getAllPosts();
+  const allTags = ["All", ...Array.from(new Set(posts.flatMap((p) => p.tags)))];
+  const [activeTag, setActiveTag] = useState("All");
+
+  const filtered =
+    activeTag === "All" ? posts : posts.filter((p) => p.tags.includes(activeTag));
+
+  return (
+    <div className="relative flex min-h-screen flex-col bg-background text-foreground">
+      <SubNavbar />
+
+      <main className="mx-auto w-full max-w-5xl px-5 pb-24 pt-28 sm:px-8">
+        {/* ── Header ─────────────────────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45 }}
+          className="mb-10"
+        >
+          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+            Blog
+          </h1>
+          <p className="mt-3 text-muted-foreground/60">
+            Engineering notes, hardware deep-dives, and building in public.
+          </p>
+        </motion.div>
+
+        {/* ── Tag filter ─────────────────────────────────────────────── */}
+        {allTags.length > 2 && (
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.7 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.1, duration: 0.4 }}
+            className="mb-10 flex flex-wrap gap-2"
           >
-            <p className="mx-auto mb-4 max-w-lg text-lg leading-relaxed text-muted-foreground sm:text-xl">
-              Engineering deep dives, AI breakthroughs in silicon design, and
-              the future of hardware — straight from the Silicogen team.
-            </p>
-            <p className="mb-10 text-sm text-muted-foreground/50">
-              First posts dropping soon. Stay close.
-            </p>
-          </motion.div>
-
-          {/* Topic pills */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.45, duration: 0.7 }}
-            className="mb-12 flex flex-wrap items-center justify-center gap-3"
-          >
-            {topics.map((topic, i) => (
-              <motion.span
-                key={topic.label}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.55 + i * 0.1, duration: 0.4 }}
-                className={`rounded-full border px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wider ${
-                  topic.color === "accent"
-                    ? "border-accent/15 bg-accent/5 text-accent/60"
-                    : "border-[hsl(var(--accent-secondary)/0.15)] bg-[hsl(var(--accent-secondary)/0.05)] text-[hsl(var(--accent-secondary)/0.6)]"
+            {allTags.map((tag) => (
+              <button
+                key={tag}
+                onClick={() => setActiveTag(tag)}
+                className={`rounded-lg px-3.5 py-1.5 text-xs font-medium transition-colors duration-150 cursor-pointer ${
+                  activeTag === tag
+                    ? "bg-[hsl(var(--accent-secondary)/0.12)] text-[hsl(var(--accent-secondary))]"
+                    : "text-muted-foreground/50 hover:text-muted-foreground hover:bg-[hsl(var(--muted)/0.5)]"
                 }`}
               >
-                {topic.label}
-              </motion.span>
+                {tag}
+              </button>
             ))}
           </motion.div>
+        )}
 
-          {/* Placeholder article cards */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.7 }}
-            className="mx-auto mb-12 grid max-w-lg gap-3"
+        {/* ── Grid ───────────────────────────────────────────────────── */}
+        {filtered.length === 0 ? (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="py-20 text-center text-sm text-muted-foreground/30"
           >
-            {[1, 2, 3].map((_, i) => (
-              <div
-                key={i}
-                className="flex items-center gap-4 rounded-xl border border-border bg-card/50 px-5 py-4 shadow-sm backdrop-blur-sm dark:border-border/50 dark:bg-card/30 dark:shadow-none"
-              >
-                <div className="h-10 w-10 flex-shrink-0 rounded-lg bg-secondary" />
-                <div className="flex-1 space-y-2 text-left">
-                  <div
-                    className="h-3 rounded bg-secondary"
-                    style={{ width: `${70 - i * 15}%` }}
-                  />
-                  <div
-                    className="h-2 rounded bg-secondary/50"
-                    style={{ width: `${90 - i * 10}%` }}
-                  />
-                </div>
-              </div>
+            No posts for this tag yet.
+          </motion.p>
+        ) : (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {filtered.map((post, i) => (
+              <PostCard key={post.slug} post={post} idx={i} />
             ))}
-          </motion.div>
-
-        </div>
+          </div>
+        )}
       </main>
 
       {/* Footer */}
-      <footer className="relative z-10 px-6 py-8">
-        <div className="mx-auto flex max-w-5xl items-center justify-center gap-2">
-          <SilicogenLogo size={16} showText={false} />
-          <span className="text-xs text-muted-foreground/40">
-            © 2026 Silicogen Inc.
-          </span>
+      <footer className="border-t border-border/20 px-6 py-8">
+        <div className="mx-auto flex max-w-5xl items-center gap-2">
+          <SilicogenLogo size={14} showText={false} />
+          <span className="text-xs text-muted-foreground/30">© 2026 Silicogen Inc.</span>
         </div>
       </footer>
     </div>
